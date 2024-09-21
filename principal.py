@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 driver = webdriver.Firefox()
 
 #abrir google.com
-driver.get('https://computo.oep.org.bo')
+driver.get('https://computoalcaldes-int.oep.org.bo')
 
 #esperar unos segundos para visualizar la página
 driver.implicitly_wait(5)
