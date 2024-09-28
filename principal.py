@@ -7,20 +7,9 @@ driver = webdriver.Firefox()
 #abrir google.com
 driver.get('https://computoalcaldes-int.oep.org.bo')
 
-#esperar unos segundos para visualizar la página
-driver.implicitly_wait(5)
-
-#buscar el campo de búsqueda de Google por su nombre (name="q")
-search_box = driver.find_element(By.NAME, 'q')
-
-#escribir "Selenium Python" en el cuadro de búsqueda
-search_box.send_keys('Selenium Python')
-
-#enviar la búsqueda (simular presionar Enter)
-search_box.submit()
 
 # Esperar unos segundos para ver los resultados
-driver.implicitly_wait(5)
+#driver.implicitly_wait(60)
 
 # Cerrar el navegador
-driver.quit()
+#driver.quit()
