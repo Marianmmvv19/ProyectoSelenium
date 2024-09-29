@@ -7,8 +7,11 @@ driver = webdriver.Firefox()
 #abrir google.com
 driver.get('https://computoalcaldes-int.oep.org.bo')
 
-# Esperar unos segundos para ver los resultados
+#esperar unos segundos para ver los resultados
 time.sleep(10)
 
+#imprimir el contenido
+html = driver.page_source
+print(html)
 # Cerrar el navegador
 driver.quit()
