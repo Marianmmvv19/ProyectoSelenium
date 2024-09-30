@@ -1,29 +1,45 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
+
 # Configurar el controlador de Firefox (geckodriver debe estar en el PATH)
 driver = webdriver.Firefox()
 
-#abrir google.com
+# Abrir el sitio web
 driver.get('https://computoalcaldes-int.oep.org.bo')
 
-#esperar unos segundos para ver los resultados
-time.sleep(10)
-print('Click en el boton')
+# Esperar unos segundos para ver los resultados
+time.sleep(5)
+print('Click en el botón ACTAS')
 
-#click en el boton actas
-actas_button = driver.find_element(By.XPATH, "//span[contains(text(), 'ACTAS')]")
-actas_button.click()
+# Esperar hasta que el botón "ACTAS" esté presente y clicable, luego hacer clic
+try:
+    actas_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'ACTAS')]"))
+    )
+    actas_button.click()
+except Exception as e:
+    print(f"Error al hacer clic en el botón ACTAS: {e}")
+    driver.quit()
+    exit()
 
-#click en el radio buttun buscar por codigo actas,espera explícita para asegurarse de que el radio button esté visible
-wait = WebDriverWait(driver, 3)
-radio_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='mat-radio-inner-circle']")))
-
-# Hacer clic en el radio button
-radio_button.click()
+# Esperar hasta que el radio button "Cod. Acta" esté presente en el DOM
+print('Esperando el radio button Cod. Acta')
+try:
+    cod_acta_button = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@class='mat-radio-label-content' and contains(., 'Cod. Acta')]"))
+    )
+    # Asegurar que el botón esté clicable antes de hacer clic
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//div[@class='mat-radio-label-content' and contains(., 'Cod. Acta')]"))).click()
+except Exception as e:
+    print(f"Error al hacer clic en el radio button Cod. Acta: {e}")
+    driver.quit()
+    exit()
 
 print('Esperar unos segundos')
-#esperar unos segundos
+# Esperar unos segundos
 time.sleep(10)
 
 print('Cerrar')
