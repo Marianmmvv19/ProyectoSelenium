@@ -15,6 +15,13 @@ print('Click en el boton')
 actas_button = driver.find_element(By.XPATH, "//span[contains(text(), 'ACTAS')]")
 actas_button.click()
 
+#click en el radio buttun buscar por codigo actas,espera explícita para asegurarse de que el radio button esté visible
+wait = WebDriverWait(driver, 3)
+radio_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='mat-radio-inner-circle']")))
+
+# Hacer clic en el radio button
+radio_button.click()
+
 print('Esperar unos segundos')
 #esperar unos segundos
 time.sleep(10)
