@@ -10,8 +10,8 @@ driver.get('https://computoalcaldes-int.oep.org.bo')
 #esperar unos segundos para ver los resultados
 time.sleep(10)
 
-#imprimir el contenido
-html = driver.page_source
-print(html)
+#click en el boton actas
+actas_button = driver.find_element(By.XPATH, "//span[text()='ACTAS']")
+
 # Cerrar el navegador
 driver.quit()
