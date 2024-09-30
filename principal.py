@@ -28,14 +28,18 @@ except Exception as e:
 # Esperar hasta que el radio button "Cod. Acta" esté presente en el DOM
 print('Esperando el radio button Cod. Acta')
 try:
-    actas_button = WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'ACTAS')]"))
+    # Esperar la presencia del elemento específico utilizando el XPath proporcionado
+    cod_acta_button = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "/html[1]/body[1]/app-root[1]/div[1]/div[1]/div[2]/div[1]/app-principal[1]/div[3]/div[1]/p-tabview[1]/div[1]/div[1]/p-tabpanel[2]/div[1]/app-acta[1]/div[1]/div[1]/form[1]/mat-radio-group[1]/div[1]/div[3]/mat-radio-button[1]/label[1]/div[1]/div[1]"))
     )
-    actas_button.click()
+
+    # Asegurar que el botón esté clicable antes de hacer clic
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/app-root[1]/div[1]/div[1]/div[2]/div[1]/app-principal[1]/div[3]/div[1]/p-tabview[1]/div[1]/div[1]/p-tabpanel[2]/div[1]/app-acta[1]/div[1]/div[1]/form[1]/mat-radio-group[1]/div[1]/div[3]/mat-radio-button[1]/label[1]/div[1]/div[1]"))).click()
 except Exception as e:
-    print(f"Error al hacer clic en el botón ACTAS: {e}")
-    driver.quit()
-    exit()
+    print(f"Error al hacer clic en el radio button Cod. Acta: {e}")
+    
+    
+
 print('Esperar unos segundos')
 # Esperar unos segundos
 time.sleep(10)
