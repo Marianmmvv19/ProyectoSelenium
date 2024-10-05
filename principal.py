@@ -38,7 +38,11 @@ try:
 except Exception as e:
     print(f"Error al hacer clic en el radio button Cod. Acta: {e}")
     
-    
+# Encontrar el campo de entrada por el placeholder
+input_field = driver.find_element(By.CSS_SELECTOR, "input[placeholder='______-_']")
+
+# Ingresar el valor "7000561" en el campo de entrada
+input_field.send_keys("7000561")    
 
 print('Esperar unos segundos')
 # Esperar unos segundos
