@@ -55,7 +55,7 @@ def hacer_click_boton_enviar(driver):
     except Exception as e:
         print(f"Error al hacer clic en el botón: {e}")
 
-def guardar_imagen(driver):
+def guardar_imagen(driver, codigo):
     """Guarda la imagen del acta en formato JPEG."""
     time.sleep(2)
     try:
@@ -67,7 +67,7 @@ def guardar_imagen(driver):
         if img_src.startswith('data:image/jpg;base64,'):
             base64_str = img_src.split(',')[1]
             image_data = base64.b64decode(base64_str)
-            with open('acta_image.jpg', 'wb') as f:
+            with open('acta_imagen_'+codigo+'.jpg', 'wb') as f:
                 f.write(image_data)
             print("Imagen guardada como 'acta_image.jpg'")
         else:
@@ -87,7 +87,7 @@ def main():
     seleccionar_cod_acta(driver)
     ingresar_codigo_acta(driver, "7000561")
     hacer_click_boton_enviar(driver)
-    guardar_imagen(driver)
+    guardar_imagen(driver,"7000561")
     store = obtener_store_ventana(driver)
     print(store)
 
