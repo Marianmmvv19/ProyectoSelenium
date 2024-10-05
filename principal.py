@@ -44,6 +44,19 @@ input_field = driver.find_element(By.CSS_SELECTOR, "input[placeholder='______-_'
 # Ingresar el valor "7000561" en el campo de entrada
 input_field.send_keys("7000561")    
 
+
+# Intentar hacer clic en el botón
+try:
+    # Esperar hasta que el botón esté presente y clicable
+    button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, "button.mat-raised-button.mat-button-base.mat-accent span.mat-button-wrapper"))
+    )
+    button.click()
+    print("Botón clicado con éxito.")
+except Exception as e:
+    print(f"Error al hacer clic en el botón: {e}")
+
+
 print('Esperar unos segundos')
 # Esperar unos segundos
 time.sleep(10)
