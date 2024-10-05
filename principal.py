@@ -69,7 +69,7 @@ def guardar_imagen(driver, codigo):
             image_data = base64.b64decode(base64_str)
             with open('acta_imagen_'+codigo+'.jpg', 'wb') as f:
                 f.write(image_data)
-            print("Imagen guardada como 'acta_image.jpg'")
+            print("Imagen guardada como 'acta_imagen_'"+codigo+"'.jpg'")
         else:
             print("El formato de la imagen no es JPEG.")
     except Exception as e:
