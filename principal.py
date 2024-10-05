@@ -1,3 +1,4 @@
+import base64
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -56,6 +57,35 @@ try:
 except Exception as e:
     print(f"Error al hacer clic en el botón: {e}")
 
+# Guardar la imagen del acta
+try:
+    # Esperar hasta que la imagen esté presente
+    img_element = WebDriverWait(driver, 5).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "img[alt='Acta']"))
+    )
+    
+    # Obtener el atributo 'src' de la imagen
+    img_src = img_element.get_attribute('src')
+
+    # Asegurarse de que el src sea en formato base64
+    if img_src.startswith('data:image/jpg;base64,'):
+        # Extraer la parte base64 del string
+        base64_str = img_src.split(',')[1]
+
+        # Decodificar la imagen de base64
+        image_data = base64.b64decode(base64_str)
+
+        # Guardar la imagen como archivo JPEG
+        with open('acta_image.jpg', 'wb') as f:
+            f.write(image_data)
+
+        print("Imagen guardada como 'acta_image.jpg'")
+    else:
+        print("El formato de la imagen no es JPEG.")
+except Exception as e:
+    print(f"Error al obtener la imagen: {e}")
+    
+    
 
 print('Esperar unos segundos')
 # Esperar unos segundos
