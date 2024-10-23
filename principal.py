@@ -79,18 +79,24 @@ def obtener_store_ventana(driver):
     """Obtiene y retorna el objeto store de la ventana."""
     return driver.execute_script("return window.store")
 
+
 def main():
     """Función principal que orquesta las operaciones."""
     driver = configurar_controlador()
     abrir_sitio_web(driver, 'https://computoalcaldes-int.oep.org.bo')
     hacer_click_boton_actas(driver)
     seleccionar_cod_acta(driver)
-    ingresar_codigo_acta(driver, "7000561")
-    hacer_click_boton_enviar(driver)
-    guardar_imagen(driver,"7000561")
-    store = obtener_store_ventana(driver)
-    print(store)
-
+    
+    # Búsqueda de código de acta
+    ini = 7000561
+    fin = 7000651
+    for i in range(ini, fin + 1):
+        ingresar_codigo_acta(driver, str(i))
+        hacer_click_boton_enviar(driver)
+        guardar_imagen(driver, str(i))
+        store = obtener_store_ventana(driver)
+        print(store)
+    
     print('Esperar unos segundos')
     time.sleep(10)
     
@@ -99,3 +105,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
