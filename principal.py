@@ -68,7 +68,7 @@ def guardar_imagen(driver, codigo):
         if img_src.startswith('data:image/jpg;base64,'):
             base64_str = img_src.split(',')[1]
             image_data = base64.b64decode(base64_str)
-            image_path = f'imagenes/acta_imagen_{codigo}.jpg'
+            image_path = f'acta_imagen_{codigo}.jpg'
             with open(image_path, 'wb') as f:
                 f.write(image_data)
             print(f"Imagen guardada como '{image_path}'")
@@ -93,14 +93,29 @@ def actualizar_ruta_imagen(codigo, ruta_imagen):
     """Actualiza la ruta de la imagen en la base de datos usando la consulta específica."""
     conn = sqlite3.connect('votaciones.db')
     cursor = conn.cursor()
-    
-    # Formatear la consulta SQL usando f-strings
-    consulta = f"UPDATE votaciones SET ruta_imagen = '{ruta_imagen}' WHERE CODIGO_MESA = {codigo};"
-    cursor.execute(consulta)
-    
+    cursor.execute("UPDATE votaciones SET ruta_imagen = ? WHERE CODIGO_MESA = ?", (ruta_imagen, codigo))
     conn.commit()
     conn.close()
     print(f"Ruta de imagen actualizada para el código {codigo}: {ruta_imagen}")
+
+def mostrar_datos_mesa(codigo):
+    """Muestra todos los datos de la mesa en la consola."""
+    conn = sqlite3.connect('votaciones.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM votaciones WHERE CODIGO_MESA = ?", (codigo,))
+    datos = cursor.fetchone()
+    conn.close()
+
+    if datos:
+        # Obtener nombres de las columnas
+        column_names = [description[0] for description in cursor.description]
+        
+        # Imprimir los datos con los nombres de las columnas
+        for name, value in zip(column_names, datos):
+            print(f"{name}: {value}")
+        print("-" * 40)  # Separador para mejor legibilidad
+    else:
+        print(f"No se encontraron datos para el código de mesa: {codigo}")
 
 def main():
     """Función principal que orquesta las operaciones."""
@@ -113,12 +128,12 @@ def main():
     codigos_mesa = obtener_codigos_mesa()
     
     for codigo in codigos_mesa:
+        mostrar_datos_mesa(codigo)  # Mostrar todos los datos de la mesa
         ingresar_codigo_acta(driver, str(codigo))
         hacer_click_boton_enviar(driver)
         ruta_imagen = guardar_imagen(driver, str(codigo))
         
         if ruta_imagen:
-            # Actualizar la ruta en la base de datos con la consulta proporcionada
             actualizar_ruta_imagen(codigo, ruta_imagen)  
     
     print('Esperar unos segundos')
