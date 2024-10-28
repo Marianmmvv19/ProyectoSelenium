@@ -57,7 +57,7 @@ def hacer_click_boton_enviar(driver):
         print(f"Error al hacer clic en el botón: {e}")
 
 def guardar_imagen(driver, codigo):
-    """Guarda la imagen del acta en formato JPEG."""
+    """Guarda la imagen del acta en formato JPEG y retorna la ruta de la imagen."""
     time.sleep(2)
     try:
         img_element = WebDriverWait(driver, 5).until(
@@ -68,13 +68,17 @@ def guardar_imagen(driver, codigo):
         if img_src.startswith('data:image/jpg;base64,'):
             base64_str = img_src.split(',')[1]
             image_data = base64.b64decode(base64_str)
-            with open('imagenes/acta_imagen_'+codigo+'.jpg', 'wb') as f:
+            image_path = f'acta_imagen_{codigo}.jpg'
+            with open(image_path, 'wb') as f:
                 f.write(image_data)
-            print("Imagen guardada como 'acta_imagen_" + codigo + ".jpg'")
+            print(f"Imagen guardada como '{image_path}'")
+            return image_path  # Retornar la ruta de la imagen
         else:
             print("El formato de la imagen no es JPEG.")
+            return None
     except Exception as e:
         print(f"Error al obtener la imagen: {e}")
+        return None
 
 def obtener_codigos_mesa():
     """Obtiene los códigos de mesa de la base de datos."""
@@ -84,6 +88,19 @@ def obtener_codigos_mesa():
     codigos = cursor.fetchall()
     conn.close()
     return [codigo[0] for codigo in codigos]  # Extraer los códigos de la lista de tuplas
+
+def actualizar_ruta_imagen(codigo, ruta_imagen):
+    """Actualiza la ruta de la imagen en la base de datos usando la consulta específica."""
+    conn = sqlite3.connect('votaciones.db')
+    cursor = conn.cursor()
+    
+    # Formatear la consulta SQL usando f-strings
+    consulta = f"UPDATE votaciones SET ruta_imagen = '{ruta_imagen}' WHERE CODIGO_MESA = {codigo};"
+    cursor.execute(consulta)
+    
+    conn.commit()
+    conn.close()
+    print(f"Ruta de imagen actualizada para el código {codigo}: {ruta_imagen}")
 
 def main():
     """Función principal que orquesta las operaciones."""
@@ -98,8 +115,11 @@ def main():
     for codigo in codigos_mesa:
         ingresar_codigo_acta(driver, str(codigo))
         hacer_click_boton_enviar(driver)
-        time.sleep(1)
-        guardar_imagen(driver, str(codigo))
+        ruta_imagen = guardar_imagen(driver, str(codigo))
+        
+        if ruta_imagen:
+            # Actualizar la ruta en la base de datos con la consulta proporcionada
+            actualizar_ruta_imagen(codigo, ruta_imagen)  
     
     print('Esperar unos segundos')
     time.sleep(10)
