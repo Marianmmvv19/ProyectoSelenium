@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+import sqlite3
 
 def configurar_controlador():
     """Configura y devuelve el controlador de Firefox."""
@@ -69,16 +70,20 @@ def guardar_imagen(driver, codigo):
             image_data = base64.b64decode(base64_str)
             with open('acta_imagen_'+codigo+'.jpg', 'wb') as f:
                 f.write(image_data)
-            print("Imagen guardada como 'acta_imagen_'"+codigo+"'.jpg'")
+            print("Imagen guardada como 'acta_imagen_" + codigo + ".jpg'")
         else:
             print("El formato de la imagen no es JPEG.")
     except Exception as e:
         print(f"Error al obtener la imagen: {e}")
 
-def obtener_store_ventana(driver):
-    """Obtiene y retorna el objeto store de la ventana."""
-    return driver.execute_script("return window.store")
-
+def obtener_codigos_mesa():
+    """Obtiene los códigos de mesa de la base de datos."""
+    conn = sqlite3.connect('votaciones.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT CODIGO_MESA FROM votaciones")
+    codigos = cursor.fetchall()
+    conn.close()
+    return [codigo[0] for codigo in codigos]  # Extraer los códigos de la lista de tuplas
 
 def main():
     """Función principal que orquesta las operaciones."""
@@ -87,15 +92,13 @@ def main():
     hacer_click_boton_actas(driver)
     seleccionar_cod_acta(driver)
     
-    # Búsqueda de código de acta
-    ini = 7000561
-    fin = 7000651
-    for i in range(ini, fin + 1):
-        ingresar_codigo_acta(driver, str(i))
+    # Obtener los códigos de mesa de la base de datos
+    codigos_mesa = obtener_codigos_mesa()
+    
+    for codigo in codigos_mesa:
+        ingresar_codigo_acta(driver, str(codigo))
         hacer_click_boton_enviar(driver)
-        guardar_imagen(driver, str(i))
-        store = obtener_store_ventana(driver)
-        print(store)
+        guardar_imagen(driver, str(codigo))
     
     print('Esperar unos segundos')
     time.sleep(10)
@@ -105,4 +108,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
