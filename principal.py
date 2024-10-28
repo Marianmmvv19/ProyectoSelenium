@@ -68,7 +68,7 @@ def guardar_imagen(driver, codigo):
         if img_src.startswith('data:image/jpg;base64,'):
             base64_str = img_src.split(',')[1]
             image_data = base64.b64decode(base64_str)
-            with open('acta_imagen_'+codigo+'.jpg', 'wb') as f:
+            with open('imagenes/acta_imagen_'+codigo+'.jpg', 'wb') as f:
                 f.write(image_data)
             print("Imagen guardada como 'acta_imagen_" + codigo + ".jpg'")
         else:
@@ -98,6 +98,7 @@ def main():
     for codigo in codigos_mesa:
         ingresar_codigo_acta(driver, str(codigo))
         hacer_click_boton_enviar(driver)
+        time.sleep(1)
         guardar_imagen(driver, str(codigo))
     
     print('Esperar unos segundos')
