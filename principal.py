@@ -68,7 +68,7 @@ def guardar_imagen(driver, codigo):
         if img_src.startswith('data:image/jpg;base64,'):
             base64_str = img_src.split(',')[1]
             image_data = base64.b64decode(base64_str)
-            image_path = f'acta_imagen_{codigo}.jpg'
+            image_path = f'imagenes/acta_imagen_{codigo}.jpg'
             with open(image_path, 'wb') as f:
                 f.write(image_data)
             print(f"Imagen guardada como '{image_path}'")
