@@ -68,7 +68,7 @@ def guardar_imagen(driver, codigo):
         if img_src.startswith('data:image/jpg;base64,'):
             base64_str = img_src.split(',')[1]
             image_data = base64.b64decode(base64_str)
-            image_path = f'imagenes/acta_imagen_{codigo}.jpg'
+            image_path = f'acta_imagen_{codigo}.jpg'
             with open(image_path, 'wb') as f:
                 f.write(image_data)
             print(f"Imagen guardada como '{image_path}'")
@@ -88,6 +88,17 @@ def obtener_codigos_mesa():
     codigos = cursor.fetchall()
     conn.close()
     return [codigo[0] for codigo in codigos]  # Extraer los códigos de la lista de tuplas
+
+def ruta_imagen_existente(codigo):
+    """Verifica si la ruta de la imagen ya está guardada en la base de datos."""
+    conn = sqlite3.connect('votaciones.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT ruta_imagen FROM votaciones WHERE CODIGO_MESA = ?", (codigo,))
+    ruta = cursor.fetchone()
+    conn.close()
+    
+    # Retorna True si la ruta de la imagen no está vacía
+    return ruta[0] is not None and ruta[0] != ""
 
 def actualizar_ruta_imagen(codigo, ruta_imagen):
     """Actualiza la ruta de la imagen en la base de datos usando la consulta específica."""
@@ -128,6 +139,10 @@ def main():
     codigos_mesa = obtener_codigos_mesa()
     
     for codigo in codigos_mesa:
+        if ruta_imagen_existente(codigo):  # Verificar si la ruta de imagen ya existe
+            print(f"Saltando el código mesa {codigo}, ya tiene imagen.")
+            continue  # Saltar al siguiente código
+
         mostrar_datos_mesa(codigo)  # Mostrar todos los datos de la mesa
         ingresar_codigo_acta(driver, str(codigo))
         hacer_click_boton_enviar(driver)
