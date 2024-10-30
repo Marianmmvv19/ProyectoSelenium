@@ -1,7 +1,13 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 import sqlite3
+import os
 
 app = Flask(__name__)
+
+# Ruta para servir imágenes
+@app.route('/imagenes/<path:filename>')
+def serve_image(filename):
+    return send_from_directory('imagenes', filename)
 
 def get_data():
     conn = sqlite3.connect('votaciones.db')
