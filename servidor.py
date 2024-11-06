@@ -12,7 +12,7 @@ def serve_image(filename):
 def get_data():
     conn = sqlite3.connect('votaciones.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM votaciones")
+    cursor.execute("SELECT * FROM votaciones WHERE ruta_imagen IS NOT NULL AND ruta_imagen != ''")
     data = cursor.fetchall()
     conn.close()
     return data
